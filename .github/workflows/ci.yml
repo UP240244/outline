@@ -134,3 +134,20 @@ jobs:
           key: ${{ secrets.RELATIVE_CI_KEY }}
           token: ${{ secrets.GITHUB_TOKEN }}
           webpackStatsFile: ./build/app/webpack-stats.json
+
+  selenium-e2e:
+    needs: changes
+    if: ${{ needs.changes.outputs.app == 'true' || needs.changes.outputs.config == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/install
+      - name: Instalar dependencias de Selenium
+        run: pip install pytest pytest-selenium pytest-html pytest-cov webdriver-manager
+      - name: Ejecutar pruebas Selenium E2E
+        run: pytest tests/ --html=reporte.html --cov=. --cov-report=xml
+      - name: Subir reporte como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-pruebas-e2e
+          path: reporte.html
