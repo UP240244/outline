@@ -12,7 +12,7 @@ let httpsConfig: ServerOptions["https"] | undefined;
 let host: string | undefined;
 
 if (environment.NODE_ENV === "development") {
-  host = host = new URL(environment.URL!).hostname;
+  host = host = new URL(environment.URL || 'http://localhost:3000').hostname;
 
   try {
     httpsConfig = {

@@ -2,7 +2,7 @@
 /* oxlint-disable @typescript-oxlint/no-var-requires */
 /* oxlint-disable no-undef */
 const { exec } = require("child_process");
-const { readdirSync, existsSync } = require("fs");
+const { readdirSync, existsSync, mkdirSync, copyFileSync } = require("fs");
 
 const getDirectories = (source) =>
   readdirSync(source, { withFileTypes: true })
@@ -78,12 +78,17 @@ async function build() {
     execAsync(
       "cp ./server/static/error.prod.html ./build/server/error.prod.html"
     ),
-    execAsync("cp package.json ./build"),
-    ...d.map(async (plugin) =>
-      execAsync(
-        `mkdir -p ./build/plugins/${plugin} && cp ./plugins/${plugin}/plugin.json ./build/plugins/${plugin}/plugin.json 2>/dev/null || :`
-      )
-    ),
+    copyFileSync("./package.json", "./build/package.json"),
+
+    ...d.map(async (plugin) => {
+      mkdirSync(`./build/plugins/${plugin}`, { recursive: true });
+      const sourcePath = `./plugins/${plugin}/plugin.json`;
+      if (existsSync(sourcePath)) {
+        copyFileSync(sourcePath, `./build/plugins/${plugin}/plugin.json`);
+      } else {
+        console.log(`[Aviso] El plugin "${plugin}" no contiene plugin.json, saltando...`);
+      }
+    }),
   ]);
 
   console.log("Done!");
