@@ -1,15 +1,30 @@
+version: "3"
 services:
   redis:
     image: redis
     ports:
-      - "127.0.0.1:6379:6379"
-    user: "redis:redis"
+      - "6381:6379" # Cambiado a 6381
   postgres:
     image: postgres
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5435:5432" # Cambiado a 5435
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: outline
-    user: "postgres:postgres"
+  outline:
+    image: outlinewiki/outline
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://user:pass@postgres:5432/outline
+      - REDIS_URL=redis://redis:6379
+      - PGSSLMODE=disable
+      - URL=http://127.0.0.1:3000
+      - COLLABORATION_URL=http://127.0.0.1:3000
+      - FORCE_HTTPS=false
+    ports:
+      - "3000:3000"

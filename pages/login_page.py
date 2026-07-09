@@ -1,17 +1,20 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from pages.base_page import BasePage
 
-class LoginPage(BasePage):
-    USERNAME_FIELD = (By.ID, "username")
-    PASSWORD_FIELD = (By.ID, "password")
-    LOGIN_BUTTON = (By.XPATH, "//button[@type='submit']")
-    ERROR_MESSAGE = (By.CLASS_NAME, "error-banner")
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+        # Selectores corregidos para Outline
+        self.email_input = (By.CSS_SELECTOR, "input[type='email']")
+        self.password_input = (By.CSS_SELECTOR, "input[type='password']")
+        self.login_button = (By.CSS_SELECTOR, "button[type='submit']")
+        self.error_message = (By.CSS_SELECTOR, "div.error-message") # Ajusta según tu CSS real
 
-    def login(self, user, pwd):
-        self.type_text(self.USERNAME_FIELD, user)
-        self.type_text(self.PASSWORD_FIELD, pwd)
-        self.click_element(self.LOGIN_BUTTON)
+    def login(self, email, password):
+        if email:
+            self.driver.find_element(*self.email_input).send_keys(email)
+        if password:
+            self.driver.find_element(*self.password_input).send_keys(password)
+        self.driver.find_element(*self.login_button).click()
 
     def obtener_error(self):
-        return self.find_element(self.ERROR_MESSAGE).text
+        return self.driver.find_element(*self.error_message).text
