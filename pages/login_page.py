@@ -2,9 +2,10 @@ from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 class LoginPage(BasePage):
     HEADING = (By.CSS_SELECTOR, "h2")
-    EMAIL_FORM = (By.CSS_SELECTOR, "form[action='/auth/email']")
-    SUBMIT_BUTTON = (By.CSS_SELECTOR, "form[action='/auth/email'] button[type='submit']")
-    EMAIL_INPUT = (By.CSS_SELECTOR, "form[action='/auth/email'] input[type='email']")
+    _EMAIL_FORM_SELECTOR = "form[action='/auth/email']"
+    EMAIL_FORM = (By.CSS_SELECTOR, _EMAIL_FORM_SELECTOR)
+    SUBMIT_BUTTON = (By.CSS_SELECTOR, f"{_EMAIL_FORM_SELECTOR} button[type='submit']")
+    EMAIL_INPUT = (By.CSS_SELECTOR, f"{_EMAIL_FORM_SELECTOR} input[type='email']")
 
     def load(self, base_url):
         self.open(f"{base_url}/login")
