@@ -3,7 +3,6 @@ from pages.base_page import BasePage
 class LoginPage(BasePage):
     HEADING = (By.CSS_SELECTOR, "h2")
     _EMAIL_FORM_SELECTOR = "form[action='/auth/email']"
-    EMAIL_FORM = (By.CSS_SELECTOR, _EMAIL_FORM_SELECTOR)
     SUBMIT_BUTTON = (By.CSS_SELECTOR, f"{_EMAIL_FORM_SELECTOR} button[type='submit']")
     EMAIL_INPUT = (By.CSS_SELECTOR, f"{_EMAIL_FORM_SELECTOR} input[type='email']")
 
