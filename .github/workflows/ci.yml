@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 env:
   NODE_ENV: test
@@ -72,7 +73,7 @@ jobs:
 
   audit:
     needs: changes
-    if: ${{ needs.changes.outputs.deps == 'true' }}
+    if: ${{ needs.changes.outputs.deps == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -81,7 +82,7 @@ jobs:
 
   test:
     needs: changes
-    if: ${{ needs.changes.outputs.app == 'true' || needs.changes.outputs.config == 'true' }}
+    if: ${{ needs.changes.outputs.app == 'true' || needs.changes.outputs.config == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -93,7 +94,7 @@ jobs:
 
   test-server:
     needs: changes
-    if: ${{ needs.changes.outputs.server == 'true' || needs.changes.outputs.config == 'true' }}
+    if: ${{ needs.changes.outputs.server == 'true' || needs.changes.outputs.config == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -143,7 +144,7 @@ jobs:
 
   selenium-e2e:
     needs: changes
-    if: ${{ needs.changes.outputs.selenium == 'true' || needs.changes.outputs.config == 'true' }}
+    if: ${{ needs.changes.outputs.selenium == 'true' || needs.changes.outputs.config == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
